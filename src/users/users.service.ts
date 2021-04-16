@@ -82,12 +82,10 @@ export class UsersService{
                 id: userInputId
             }
         })
-
         if(user){
             return true
         }else{
             return false
         }
-
     }
 }
