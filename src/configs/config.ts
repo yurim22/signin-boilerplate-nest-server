@@ -14,8 +14,8 @@ const config: Config = {
     //     sortSchema: true,
     // },
     security: {
-        expiresIn: '5h',
-        refreshIn: '7d',
+        expiresIn: '1m',
+        refreshIn: '2m',
         bcryptSaltOrRound: 10,
     },
     jwtSecretKey:{

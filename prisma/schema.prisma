@@ -1,19 +1,16 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model patient {
-  seq       Int      @id @default(autoincrement())
+  seq                Int      @id @default(autoincrement())
   creation_timestamp DateTime @default(now())
-  patient_id         String
+  patient_id         String   @unique
   patient_name       String?
   patient_sex        String
   patient_age        String   @default("")
@@ -23,42 +20,42 @@ model patient {
 }
 
 model receive_pacs {
-  creation_timestamp DateTime @default(now())
+  creation_timestamp DateTime  @default(now())
   update_timestamp   DateTime?
-  receive_pacs_index Int      @id @default(0)
+  receive_pacs_index Int       @id @default(0)
   AE                 String
   host_ip            String
   port               Int
-  user_id            String   @unique
-  user               user     @relation(fields: [user_id], references: [id])
+  user_id            String    @unique
+  user               user      @relation(fields: [user_id], references: [id])
 }
 
 model send_pacs {
-  creation_timeStamp DateTime @default(now())
+  creation_timeStamp DateTime  @default(now())
   update_timestamp   DateTime?
-  send_pacs_index    Int      @id @default(0)
+  send_pacs_index    Int       @id @default(0)
   AE                 String
   client_ip          String
   port               Int
-  user_id            String   @unique
-  user               user     @relation(fields: [user_id], references: [id])
+  user_id            String    @unique
+  user               user      @relation(fields: [user_id], references: [id])
 }
 
 model series {
-  seq Int    @id @default(autoincrement())
-  image_url  String
-  study_seq Int @unique
-  study      study  @relation(fields: [study_seq], references: [seq])
+  seq       Int    @id @default(autoincrement())
+  image_url String
+  study_seq Int    @unique
+  study     study  @relation(fields: [study_seq], references: [seq])
 }
 
 model study {
-  seq     Int          @id @default(autoincrement())
+  seq           Int          @id @default(autoincrement())
   status        study_status @default(ANALYZED)
   patient_id    String
   study_date    DateTime
   analysis_date DateTime
-  result        String
   volumes       String
+  results       String?
   patient       patient      @relation(fields: [patient_id], references: [patient_id])
   series        series?
   user          user[]       @relation("studyuserconfirm")
@@ -67,30 +64,31 @@ model study {
 }
 
 model user {
-  seq           Int             @id @default(autoincrement())
-  id            String          @unique
-  password      String
-  name          String
-  permission         Permission @default(PHYSICIAN)
-  institution        String?
-  creation_timestamp DateTime        @default(now())
-  update_timestamp   DateTime?
-  invalid_password_count Int? @default(0)
-  last_password_update_timestamp Int @default(0)
-  receive_pacs       receive_pacs?
-  send_pacs          send_pacs?
-  study              study[]         @relation("studyuserconfirm")
-  user_signin_history           user_signin_history[]
+  seq                            Int                   @id @default(autoincrement())
+  id                             String                @unique
+  password                       String
+  name                           String
+  permission                     Permission            @default(PHYSICIAN)
+  institution                    String?
+  creation_timestamp             DateTime              @default(now())
+  update_timestamp               DateTime?
+  invalid_password_count         Int?                  @default(0)
+  last_password_update_timestamp DateTime?
+  receive_pacs                   receive_pacs?
+  send_pacs                      send_pacs?
+  user_signin_history            user_signin_history[]
+  study                          study[]               @relation("studyuserconfirm")
 }
 
 model user_signin_history {
-  id String
-  ip String?
-  seq Int @default(autoincrement()) @id
-  sign_in_timestamp Int @default(0)
-  sign_out_timestamp Int @default(0)
-  user user @relation(fields: [id], references: [id])
+  id                 String
+  ip                 String?
+  seq                Int       @id @default(autoincrement())
+  sign_in_timestamp  DateTime  @default(now())
+  sign_out_timestamp DateTime?
+  user               user      @relation(fields: [id], references: [id])
 
+  @@unique([seq, id], name: "user_signin_history.seq_id_unique")
   @@index([id], name: "id")
 }
 

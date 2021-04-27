@@ -1,5 +1,6 @@
 import { Prisma, user } from '.prisma/client';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { PasswordService } from 'src/services/password.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
@@ -9,18 +10,19 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private readonly usersService: UsersService,
         private passwordService: PasswordService){}
-
+    
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     async getAllUsers(): Promise<user[]>{
         return await this.usersService.getAllUsers();
     }
 
+    // @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
     async findOneUser(@Param('id') userId: string) {
         const dto: Prisma.userFindUniqueArgs = {
             where: { id: userId },
         };
-
         return await this.usersService.findOneUser(dto)
     }
     // @Get('/:seq')
@@ -33,6 +35,7 @@ export class UsersController {
     //     return await this.usersService.findOneUser(dto)
     // }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post()
     async createUser(@Body() data: CreateUserDto) {
         const dto: Prisma.userCreateArgs = {
@@ -48,17 +51,18 @@ export class UsersController {
         return await this.usersService.createUser(dto)
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':seq')
     async updateUser(@Param('seq') userSeq: string, @Body() data: UpdateUserDto) {
         const userSeqToInt = parseInt(userSeq);
-        const hashedPassword = await this.passwordService
+        // const hashedPassword = await this.passwordService
         const dto: Prisma.userUpdateArgs = {
             data: {
                 id: data.id,
                 password: data.password,
                 name: data.name,
                 permission: data.permission,
-                institution: data.institution
+                institution: data.institution,
             },
             where: {seq: userSeqToInt}
         }
@@ -66,6 +70,7 @@ export class UsersController {
         return await this.usersService.updateUser(dto)
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     async deleteUser(@Param('id') userId: string) {
         const dto: Prisma.userDeleteArgs = {
@@ -75,8 +80,19 @@ export class UsersController {
 
     }
     
+    @UseGuards(AuthGuard('jwt'))
     @Get('/checkId/:id')
     async checkDuplicateId(@Param('id') userInputId: string){
         return await this.usersService.checkDuplicateId(userInputId)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('/unlock/:id')
+    async unlockSelectedUser(@Param('id') userId: string, @Body() data) {
+        const dto: Prisma.userUpdateArgs = {
+            where: {id: userId},
+            data: {invalid_password_count: data.invalid_password_count}
+        }
+        return await this.usersService.unlockSelectedUser(dto)
     }
 }

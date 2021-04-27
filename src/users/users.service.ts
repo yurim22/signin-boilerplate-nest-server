@@ -88,4 +88,9 @@ export class UsersService{
             return false
         }
     }
+
+    async unlockSelectedUser(data: Prisma.userUpdateArgs): Promise<user> {
+        return await this.prisma.user.update(data)
+    }
+    
 }
