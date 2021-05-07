@@ -8,6 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { StudyService } from './studies/study.service';
 import { StudiesController } from './studies/study.controller';
 import { StudyModule } from './studies/study.module';
+import { EnvironmentService } from './environment/environment.service';
+import { EnvironmentController } from './environment/environment.controller';
+import { EnvironmentModule } from './environment/environment.module';
 import config from './configs/config';
 
 @Module({
@@ -15,10 +18,11 @@ import config from './configs/config';
         ConfigModule.forRoot({isGlobal: true, load: [config]}),
         UsersModule,
         AuthModule,
-        StudyModule
+        StudyModule,
+        EnvironmentModule
     ],
-    controllers: [AppController, StudiesController],
-    providers: [AppService, PrismaService, StudyService],
+    controllers: [AppController, StudiesController, EnvironmentController],
+    providers: [AppService, PrismaService, StudyService, EnvironmentService],
     exports: [UsersModule]
 })
 export class AppModule {}

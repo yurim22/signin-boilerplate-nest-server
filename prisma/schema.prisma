@@ -7,18 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model patient {
-  seq                Int      @id @default(autoincrement())
-  creation_timestamp DateTime @default(now())
-  patient_id         String   @unique
-  patient_name       String?
-  patient_sex        String
-  patient_age        String   @default("")
-  study              study[]
-
-  @@index([patient_id], name: "patient_id")
-}
-
 model receive_pacs {
   creation_timestamp DateTime  @default(now())
   update_timestamp   DateTime?
@@ -39,28 +27,6 @@ model send_pacs {
   port               Int
   user_id            String    @unique
   user               user      @relation(fields: [user_id], references: [id])
-}
-
-model series {
-  seq       Int    @id @default(autoincrement())
-  image_url String
-  study_seq Int    @unique
-  study     study  @relation(fields: [study_seq], references: [seq])
-}
-
-model study {
-  seq           Int          @id @default(autoincrement())
-  status        study_status @default(ANALYZED)
-  patient_id    String
-  study_date    DateTime
-  analysis_date DateTime
-  volumes       String
-  results       String?
-  patient       patient      @relation(fields: [patient_id], references: [patient_id])
-  series        series?
-  user          user[]       @relation("studyuserconfirm")
-
-  @@index([patient_id], name: "patient_id")
 }
 
 model user {
@@ -88,8 +54,45 @@ model user_signin_history {
   sign_out_timestamp DateTime?
   user               user      @relation(fields: [id], references: [id])
 
-  @@unique([seq, id], name: "user_signin_history.seq_id_unique")
   @@index([id], name: "id")
+}
+
+model patient {
+  seq                Int      @id @default(autoincrement())
+  creation_timestamp DateTime @default(now())
+  patient_id         String   @unique
+  patient_name       String?
+  patient_sex        String?
+  patient_age        String?  @default("")
+  study              study[]
+
+  @@index([patient_id], name: "patient_id")
+}
+
+model series {
+  seq       Int    @id @default(autoincrement())
+  image_url String @default("")
+  study_seq Int    @unique
+  study     study  @relation(fields: [study_seq], references: [seq])
+}
+
+model study {
+  seq           Int          @id @default(autoincrement())
+  status        study_status @default(ANALYZED)
+  patient_id    String
+  study_date    DateTime
+  analysis_date DateTime?
+  volumes       String
+  results       String?
+  patient       patient      @relation(fields: [patient_id], references: [patient_id])
+  series        series?
+  user          user[]       @relation("studyuserconfirm")
+
+  @@index([patient_id], name: "patient_id")
+}
+
+model dummy {
+  seq Int @id @default(autoincrement())
 }
 
 enum Permission {

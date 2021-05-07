@@ -13,8 +13,15 @@ export class StudiesController {
     @UseGuards(AuthGuard('jwt'))
     @Get()
     async getStudyList(): Promise<study[]> {
+        
         return await this.studyService.getStudyList();
     }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Get()
+    // async getStudyList(): Promise<study[]> {
+        
+    //     return await this.studyService.getStudyList();
+    // }
 
     @UseGuards(AuthGuard('jwt'))
     @Get(':seq')
@@ -35,6 +42,9 @@ export class StudiesController {
         const dto: Prisma.studyUpdateArgs = {
             where: {
                 seq: studySeqToInt
+            },
+            include: {
+                patient: true
             },
             data: {
                 status: data.status
