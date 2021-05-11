@@ -43,7 +43,6 @@ model user {
   receive_pacs                   receive_pacs?
   send_pacs                      send_pacs?
   user_signin_history            user_signin_history[]
-  study                          study[]               @relation("studyuserconfirm")
 }
 
 model user_signin_history {
@@ -86,7 +85,8 @@ model study {
   results       String?
   patient       patient      @relation(fields: [patient_id], references: [patient_id])
   series        series?
-  user          user[]       @relation("studyuserconfirm")
+  confirmed_by String?
+  confirmed_user_id String?
 
   @@index([patient_id], name: "patient_id")
 }

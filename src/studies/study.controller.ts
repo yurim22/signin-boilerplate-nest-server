@@ -47,7 +47,9 @@ export class StudiesController {
                 patient: true
             },
             data: {
-                status: data.status
+                status: data.updateStudyData.status,
+                confirmed_by: data.userInfo.name,
+                confirmed_user_id: data.userInfo.id
             }
         }
         return await this.studyService.updateStudyStatus(dto)

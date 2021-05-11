@@ -17,7 +17,7 @@ export class UsersController {
         return await this.usersService.getAllUsers();
     }
 
-    // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
     async findOneUser(@Param('id') userId: string) {
         const dto: Prisma.userFindUniqueArgs = {
@@ -35,7 +35,7 @@ export class UsersController {
     //     return await this.usersService.findOneUser(dto)
     // }
 
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Post()
     async createUser(@Body() data: CreateUserDto) {
         const dto: Prisma.userCreateArgs = {
