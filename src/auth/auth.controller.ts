@@ -1,16 +1,19 @@
 import { Prisma } from '.prisma/client';
 import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignInDTO } from './entities/signin.dto';
 import { Token } from './entities/token.entity';
 import { LocalAuthGuard } from './local-auth.guard';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService){}
 
     // @UseGuards(LocalAuthGuard)
+    @ApiBody({type: SignInDTO})
     @Post('signin')
     async signIn(@Body() data: SignInDTO): Promise<any> {
         // token issuance

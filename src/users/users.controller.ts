@@ -1,12 +1,14 @@
 import { Prisma, user } from '.prisma/client';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PasswordService } from 'src/services/password.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService,
@@ -36,7 +38,8 @@ export class UsersController {
     //     return await this.usersService.findOneUser(dto)
     // }
 
-    // @UseGuards(AuthGuard('jwt'))
+    @ApiBody({type: CreateUserDto})
+    @UseGuards(AuthGuard('jwt'))
     @Post()
     async createUser(@Body() data: CreateUserDto) {
         const dto: Prisma.userCreateArgs = {
@@ -52,6 +55,7 @@ export class UsersController {
         return await this.usersService.createUser(dto)
     }
 
+    @ApiBody({type: UpdateUserDto})
     @UseGuards(AuthGuard('jwt'))
     @Patch(':seq')
     async updateUser(@Param('seq') userSeq: string, @Body() data: UpdateUserDto) {
@@ -97,6 +101,7 @@ export class UsersController {
         return await this.usersService.unlockSelectedUser(dto)
     }
 
+    @ApiBody({type: ChangePasswordDto})
     @UseGuards(AuthGuard('jwt'))
     @Patch('/changePwd/:id')
     async updatePassword(@Param('id') userid: string, @Body() data: ChangePasswordDto) {

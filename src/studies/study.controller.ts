@@ -1,9 +1,11 @@
 import { series, study } from '.prisma/client';
 import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { StudyService } from './study.service';
 
+@ApiTags('Study')
 @Controller('studies')
 export class StudiesController {
     constructor(
