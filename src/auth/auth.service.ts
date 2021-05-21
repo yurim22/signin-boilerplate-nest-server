@@ -28,7 +28,6 @@ export class AuthService{
         if(!user) {
             throw new NotFoundException(`No user found : ${id}`)
         }
-        console.log('user info',user)
         
         // 3. id가 있는 경우에, user.invalid_password_count 확인
         // 이미 5회 이상 로그인 실패한 경우, 바로 에러 발생(BadRequestException)
@@ -71,7 +70,7 @@ export class AuthService{
     }
 
     //user login feature
-    async signIn(signinInfo: SignInDTO): Promise<Token> {
+    async signIn(signinInfo: SignInDTO): Promise<any> {
         const user = await this.validateUser(signinInfo.id, signinInfo.password)
         
         return this.generateToken({
@@ -107,13 +106,16 @@ export class AuthService{
                 userId, sub
             })
         } catch(e) {
-            console.log(e)
             throw new UnauthorizedException();
         }
     }
 
     async signout(data: Prisma.user_signin_historyUpdateArgs) {
         return await this.prisma.user_signin_history.update(data)
+    }
+
+    async changePassword(): Promise<any> {
+        
     }
 
 }

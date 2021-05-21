@@ -1,8 +1,9 @@
 import { Prisma } from ".prisma/client";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { user } from "@prisma/client";
 import { PasswordService } from "src/services/password.service";
 import { PrismaService } from "src/services/prisma.service";
+import { ChangePasswordDto } from "./dto/change-password-dto";
 
 @Injectable()
 export class UsersService{
@@ -91,6 +92,47 @@ export class UsersService{
 
     async unlockSelectedUser(data: Prisma.userUpdateArgs): Promise<user> {
         return await this.prisma.user.update(data)
+    }
+
+    async updatePassword(data: ChangePasswordDto, userid: string): Promise<user> {
+        console.log('data', data)
+        var user = await this.prisma.user.findUnique(
+            {
+                where: {
+                    id: userid
+                }
+            }
+        )
+
+        const passwordValid = await this.passwordService.validatePassword(data.oldPassword, user.password);
+        if(!passwordValid) {
+            throw new NotFoundException('Invalid Password')
+        } else{
+            console.log('valid user, can change to new password')
+            console.log()
+            const hashedPassword = await this.passwordService.hashPassword(data.newPassword);
+
+            return await this.prisma.user.update({
+                data: {
+                    password: hashedPassword,
+                    last_password_update_timestamp: new Date()
+                },
+                where: {
+                    id: userid
+                }
+            })
+        }
+    }
+    
+    async validateUser(id: string, pwd: string): Promise<any> {
+        var user = await this.prisma.user.findUnique(
+            {where: {id: id}}
+        )
+
+        const passwordVaild = await this.passwordService.validatePassword(pwd, user.password);
+        if(!passwordVaild) {
+            throw new NotFoundException('Invalid Password')
+        }
     }
     
 }

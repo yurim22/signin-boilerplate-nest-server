@@ -12,18 +12,36 @@ export class AuthController {
 
     // @UseGuards(LocalAuthGuard)
     @Post('signin')
-    async signIn(@Body() data: SignInDTO): Promise<Token> {
-        const {accessToken, refreshToken} = await this.authService.signIn(data)
-        return {
-            accessToken,
-            refreshToken
-        }
-    }
+    async signIn(@Body() data: SignInDTO): Promise<any> {
+        // token issuance
+        const {accessToken, refreshToken} = await this.authService.signIn(data);
+        console.log({accessToken, refreshToken});
+        // user data 
+            //user data promise type
+        const userResult = await this.authService.validateUser(data.id, data.password);
+        const userId = userResult.id;
+        const passwordUpdateTimestamp = userResult.last_password_update_timestamp;
+        console.log(passwordUpdateTimestamp)
 
-    // @Patch('logout')
-    // async logout(@Body() data): Promise<any> {
-        
-    // }
+        // user password validate (if password need to change)
+        const currentDate = new Date();
+        const sixMonthAgo = new Date(currentDate.setMonth(currentDate.getMonth()-6));
+
+        let pwdStatus = '';
+
+        if(passwordUpdateTimestamp === null){
+            console.log('first login')
+            pwdStatus = 'first login';
+        } else if(passwordUpdateTimestamp < sixMonthAgo){
+            console.log('password expired')
+            pwdStatus = 'password expired'
+        } else {
+            console.log('available password')
+            pwdStatus = 'available password'
+        }
+
+        return {accessToken, refreshToken, userId, pwdStatus}
+    }
 
     @Patch('signout')
     async signout(@Body() data): Promise<any> {
@@ -41,7 +59,6 @@ export class AuthController {
     @Post('silent-refresh')
     async silent_refresh(@Body() data): Promise<Token> {
         const {accessToken, refreshToken} = await this.authService.refreshToken(data.refreshToken)
-        console.log(data)
         return {
             accessToken,
             refreshToken

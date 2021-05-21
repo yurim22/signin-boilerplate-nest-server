@@ -2,6 +2,7 @@ import { Prisma, user } from '.prisma/client';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PasswordService } from 'src/services/password.service';
+import { ChangePasswordDto } from './dto/change-password-dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
@@ -94,5 +95,20 @@ export class UsersController {
             data: {invalid_password_count: data.invalid_password_count}
         }
         return await this.usersService.unlockSelectedUser(dto)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('/changePwd/:id')
+    async updatePassword(@Param('id') userid: string, @Body() data: ChangePasswordDto) {
+        // const userSeqToInt = parseInt(userSeq);
+        // const hashedPassword = await this.passwordService
+        // const dto: Prisma.userUpdateArgs = {
+        //     data: {
+        //         password: data.newPassword
+        //     },
+        //     where: {id: userid}
+        // }
+
+        return await this.usersService.updatePassword(data, userid)
     }
 }

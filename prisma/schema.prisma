@@ -86,7 +86,7 @@ model study {
   patient       patient      @relation(fields: [patient_id], references: [patient_id])
   series        series?
   confirmed_by String?
-  confirmed_user_id String?
+  confirm_user_id String?
 
   @@index([patient_id], name: "patient_id")
 }
