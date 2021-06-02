@@ -10,10 +10,10 @@ datasource db {
 model receive_pacs {
   creation_timestamp DateTime  @default(now())
   update_timestamp   DateTime?
-  receive_pacs_index Int       @id @default(0)
+  receive_pacs_index Int       @id @default(autoincrement())
   AE                 String
   host_ip            String
-  port               Int
+  port               String
   user_id            String    @unique
   user               user      @relation(fields: [user_id], references: [id])
 }
@@ -21,10 +21,10 @@ model receive_pacs {
 model send_pacs {
   creation_timeStamp DateTime  @default(now())
   update_timestamp   DateTime?
-  send_pacs_index    Int       @id @default(0)
+  send_pacs_index    Int       @id @default(autoincrement())
   AE                 String
   client_ip          String
-  port               Int
+  port               String
   user_id            String    @unique
   user               user      @relation(fields: [user_id], references: [id])
 }

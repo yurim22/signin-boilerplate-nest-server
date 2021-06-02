@@ -11,6 +11,8 @@ import { StudyModule } from './studies/study.module';
 import { EnvironmentService } from './environment/environment.service';
 import { EnvironmentController } from './environment/environment.controller';
 import { EnvironmentModule } from './environment/environment.module';
+import { PacsController } from './pacs/pacs.controller';
+import { PacsService } from './pacs/pacs.service';
 import config from './configs/config';
 
 @Module({
@@ -21,8 +23,8 @@ import config from './configs/config';
         StudyModule,
         EnvironmentModule
     ],
-    controllers: [AppController, StudiesController, EnvironmentController],
-    providers: [AppService, PrismaService, StudyService, EnvironmentService],
+    controllers: [AppController, StudiesController, EnvironmentController, PacsController],
+    providers: [AppService, PrismaService, StudyService, EnvironmentService, PacsService],
     exports: [UsersModule]
 })
 export class AppModule {}

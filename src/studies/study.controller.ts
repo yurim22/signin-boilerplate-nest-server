@@ -1,5 +1,5 @@
 import { series, study } from '.prisma/client';
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
@@ -12,18 +12,11 @@ export class StudiesController {
         private readonly studyService: StudyService
     ){}
     
-    @UseGuards(AuthGuard('jwt'))
-    @Get()
-    async getStudyList(): Promise<study[]> {
-        
-        return await this.studyService.getStudyList();
-    }
     // @UseGuards(AuthGuard('jwt'))
-    // @Get()
-    // async getStudyList(): Promise<study[]> {
-        
-    //     return await this.studyService.getStudyList();
-    // }
+    @Get()
+    async getStudyList(@Query('status') queryParams): Promise<study[]> {
+        return await this.studyService.getStudyList(queryParams);
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Get(':seq')
@@ -51,9 +44,24 @@ export class StudiesController {
             data: {
                 status: data.updateStudyData.status,
                 confirmed_by: data.userInfo.name,
-                confirmed_user_id: data.userInfo.id
+                confirm_user_id: data.userInfo.id
             }
         }
         return await this.studyService.updateStudyStatus(dto)
     }
+
+    // @UseGuards(AuthGuard('jwt'))
+    // @Get('filter')
+    // async filterStudyTable(@Query('status') queryParams: string): Promise<study[]>{
+    //     // const dto: Prisma.studyFindManyArgs = {
+    //     //     where: {
+    //     //         status: queryParams
+    //     //     },
+    //     //     include: {
+    //     //         patient: true
+    //     //     }
+    //     // }
+    //     return await this.studyService.getStudyListWithParam(queryParams)
+    // }
+
 }

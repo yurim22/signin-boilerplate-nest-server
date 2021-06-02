@@ -68,6 +68,7 @@ export class UsersController {
                 name: data.name,
                 permission: data.permission,
                 institution: data.institution,
+                update_timestamp: new Date()
             },
             where: {seq: userSeqToInt}
         }

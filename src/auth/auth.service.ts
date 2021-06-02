@@ -114,8 +114,4 @@ export class AuthService{
         return await this.prisma.user_signin_history.update(data)
     }
 
-    async changePassword(): Promise<any> {
-        
-    }
-
 }

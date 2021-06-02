@@ -8,12 +8,21 @@ export class StudyService {
     ){}
 
 
-    async getStudyList(){
-        return await this.prisma.study.findMany({
-            include: {
-                patient: true
-            }
-        });
+    async getStudyList(queryParams){
+        console.log('queryParms 입니다아아아',queryParams);
+        if(queryParams === undefined) {
+            console.log('undefined다아')
+            return [];
+        } else{
+            return await this.prisma.study.findMany({
+                where:{
+                    status: {in : queryParams}
+                },
+                include: {
+                    patient: true
+                }
+            });
+        }   
     }
 
     async getSeriesImg(data){
@@ -23,4 +32,19 @@ export class StudyService {
     async updateStudyStatus(data) {
         return await this.prisma.study.update(data)
     }
+
+    async getStudyListWithParam(queryParams) {
+        console.log(queryParams)
+        console.log(typeof queryParams)
+        return await this.prisma.study.findMany({
+            where:{
+                status: queryParams
+            },
+            include: {
+                patient: true
+            }
+        })
+    }
+
+    
 }
