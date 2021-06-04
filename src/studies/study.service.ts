@@ -8,21 +8,47 @@ export class StudyService {
     ){}
 
 
-    async getStudyList(queryParams){
-        console.log('queryParms 입니다아아아',queryParams);
-        if(queryParams === undefined) {
-            console.log('undefined다아')
-            return [];
+    async getStudyList(statusParams:any, idParams:string, nameParams:string){
+        console.log('statusParams', statusParams);
+        console.log('idParams', idParams);
+        console.log('nameParams', nameParams);
+        if(statusParams === undefined && idParams === undefined && nameParams === undefined){
+            return await this.prisma.study.findMany({
+                include: {
+                    patient: true
+                }
+            })
+        } else if(statusParams === undefined) {
+            return await this.prisma.study.findMany({
+                where: {
+                    AND: [
+                        {patient_id : {contains: idParams}},
+                        {patient: {
+                            patient_name: {contains: nameParams}
+                        }}
+                    ]
+                },
+                include: {
+                    patient: true
+                }
+            })
         } else{
+            const statusParamsArray = statusParams.toUpperCase().split(',');
             return await this.prisma.study.findMany({
                 where:{
-                    status: {in : queryParams}
+                    AND: [
+                        {status: {in : statusParamsArray}},
+                        {patient_id : {contains: idParams}},
+                        {patient: {
+                            patient_name: {contains: nameParams}
+                        }}
+                    ]
                 },
                 include: {
                     patient: true
                 }
             });
-        }   
+        }
     }
 
     async getSeriesImg(data){
