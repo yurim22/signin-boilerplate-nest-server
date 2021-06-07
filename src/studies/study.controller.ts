@@ -14,9 +14,14 @@ export class StudiesController {
     
     // @UseGuards(AuthGuard('jwt'))
     @Get()
-    async getStudyList(@Query('status') statusParams:string, @Query('patient_id') idParams:string,
-    @Query('patient_name') nameParams: string): Promise<study[]> {
-        return await this.studyService.getStudyList(statusParams, idParams, nameParams);
+    async getStudyList(
+        @Query('status') statusParams:string, 
+        @Query('patient_id') idParams:string,
+        @Query('patient_name') nameParams: string, 
+        @Query('study_date') studyDateParams: string, 
+        @Query('analysis_date') analysisDateParams: string
+    ): Promise<study[]> {
+        return await this.studyService.getStudyList(statusParams, idParams, nameParams, studyDateParams, analysisDateParams);
     }
 
     @UseGuards(AuthGuard('jwt'))
