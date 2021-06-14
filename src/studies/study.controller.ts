@@ -6,22 +6,35 @@ import { Prisma } from '@prisma/client';
 import { StudyService } from './study.service';
 
 @ApiTags('Study')
-@Controller('studies')
+@Controller('api/v1/studies')
 export class StudiesController {
     constructor(
         private readonly studyService: StudyService
     ){}
     
-    // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     async getStudyList(
         @Query('status') statusParams:string, 
         @Query('patient_id') idParams:string,
         @Query('patient_name') nameParams: string, 
         @Query('study_date') studyDateParams: string, 
-        @Query('analysis_date') analysisDateParams: string
+        @Query('analysis_date') analysisDateParams: string,
+        @Query('limit') limitParams: string,
+        @Query('skip') skipParams: string,
     ): Promise<study[]> {
-        return await this.studyService.getStudyList(statusParams, idParams, nameParams, studyDateParams, analysisDateParams);
+        return await this.studyService.getStudyList(statusParams, idParams, nameParams, studyDateParams, analysisDateParams, limitParams, skipParams);
+    }
+
+    @Get('studiesCount')
+    async countStudyData(
+        @Query('status') statusParams:string, 
+        @Query('patient_id') idParams:string,
+        @Query('patient_name') nameParams: string, 
+        @Query('study_date') studyDateParams: string, 
+        @Query('analysis_date') analysisDateParams: string,
+    ): Promise<number> {
+        return await this.studyService.countStudyData(statusParams, idParams, nameParams, studyDateParams, analysisDateParams)
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -55,19 +68,5 @@ export class StudiesController {
         }
         return await this.studyService.updateStudyStatus(dto)
     }
-
-    // @UseGuards(AuthGuard('jwt'))
-    // @Get('filter')
-    // async filterStudyTable(@Query('status') queryParams: string): Promise<study[]>{
-    //     // const dto: Prisma.studyFindManyArgs = {
-    //     //     where: {
-    //     //         status: queryParams
-    //     //     },
-    //     //     include: {
-    //     //         patient: true
-    //     //     }
-    //     // }
-    //     return await this.studyService.getStudyListWithParam(queryParams)
-    // }
 
 }

@@ -6,7 +6,7 @@ import { PacsDto } from './dto/pacs-dto';
 import { PacsService } from './pacs.service';
 
 @ApiTags('Pacs')
-@Controller('pacs')
+@Controller('api/v1/pacs')
 export class PacsController {
     constructor(
         private readonly pacsService: PacsService

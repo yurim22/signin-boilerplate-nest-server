@@ -9,7 +9,7 @@ import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
-@Controller('users')
+@Controller('api/v1/users')
 export class UsersController {
     constructor(private readonly usersService: UsersService,
         private passwordService: PasswordService){}

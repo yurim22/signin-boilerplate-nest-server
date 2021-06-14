@@ -95,7 +95,6 @@ export class UsersService{
     }
 
     async updatePassword(data: ChangePasswordDto, userid: string): Promise<user> {
-        console.log('data', data)
         var user = await this.prisma.user.findUnique(
             {
                 where: {
@@ -108,8 +107,6 @@ export class UsersService{
         if(!passwordValid) {
             throw new NotFoundException('Invalid Password')
         } else{
-            console.log('valid user, can change to new password')
-            console.log()
             const hashedPassword = await this.passwordService.hashPassword(data.newPassword);
 
             return await this.prisma.user.update({

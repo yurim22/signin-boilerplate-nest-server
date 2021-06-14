@@ -8,7 +8,7 @@ import { Token } from './entities/token.entity';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
     constructor(private readonly authService: AuthService){}
 
@@ -24,7 +24,6 @@ export class AuthController {
         const userResult = await this.authService.validateUser(data.id, data.password);
         const userId = userResult.id;
         const passwordUpdateTimestamp = userResult.last_password_update_timestamp;
-        console.log(passwordUpdateTimestamp)
 
         // user password validate (if password need to change)
         const currentDate = new Date();
@@ -33,13 +32,10 @@ export class AuthController {
         let pwdStatus = '';
 
         if(passwordUpdateTimestamp === null){
-            console.log('first login')
             pwdStatus = 'first login';
         } else if(passwordUpdateTimestamp < sixMonthAgo){
-            console.log('password expired')
             pwdStatus = 'password expired'
         } else {
-            console.log('available password')
             pwdStatus = 'available password'
         }
 
@@ -67,4 +63,5 @@ export class AuthController {
             refreshToken
         }
     }
+
 }
