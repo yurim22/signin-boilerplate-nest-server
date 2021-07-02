@@ -106,7 +106,7 @@ export class AuthService{
                 userId, sub
             })
         } catch(e) {
-            throw new UnauthorizedException();
+            throw new Error();
         }
     }
 
