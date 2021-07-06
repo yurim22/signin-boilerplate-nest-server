@@ -1,27 +1,14 @@
 -- CreateTable
-CREATE TABLE `patient` (
-    `seq` INTEGER NOT NULL AUTO_INCREMENT,
-    `creation_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `patient_id` VARCHAR(191) NOT NULL,
-    `patient_name` VARCHAR(191),
-    `patient_sex` VARCHAR(191) NOT NULL,
-    `patient_age` VARCHAR(191) NOT NULL DEFAULT '',
-INDEX `patient_id`(`patient_id`),
-
-    PRIMARY KEY (`seq`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `receive_pacs` (
     `creation_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_timestamp` DATETIME(3),
-    `receive_pacs_index` INTEGER NOT NULL DEFAULT 0,
+    `receive_pacs_index` INTEGER NOT NULL AUTO_INCREMENT,
     `AE` VARCHAR(191) NOT NULL,
     `host_ip` VARCHAR(191) NOT NULL,
-    `port` INTEGER NOT NULL,
+    `port` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
-UNIQUE INDEX `receive_pacs.user_id_unique`(`user_id`),
 
+    UNIQUE INDEX `receive_pacs.user_id_unique`(`user_id`),
     PRIMARY KEY (`receive_pacs_index`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -29,23 +16,66 @@ UNIQUE INDEX `receive_pacs.user_id_unique`(`user_id`),
 CREATE TABLE `send_pacs` (
     `creation_timeStamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_timestamp` DATETIME(3),
-    `send_pacs_index` INTEGER NOT NULL DEFAULT 0,
+    `send_pacs_index` INTEGER NOT NULL AUTO_INCREMENT,
     `AE` VARCHAR(191) NOT NULL,
     `client_ip` VARCHAR(191) NOT NULL,
-    `port` INTEGER NOT NULL,
+    `port` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
-UNIQUE INDEX `send_pacs.user_id_unique`(`user_id`),
 
+    UNIQUE INDEX `send_pacs.user_id_unique`(`user_id`),
     PRIMARY KEY (`send_pacs_index`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `user` (
+    `seq` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `permission` ENUM('ADMINISTRATOR', 'PHYSICIAN', 'DEVELOPER') NOT NULL DEFAULT 'PHYSICIAN',
+    `institution` VARCHAR(191),
+    `creation_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_timestamp` DATETIME(3),
+    `invalid_password_count` INTEGER DEFAULT 0,
+    `last_password_update_timestamp` DATETIME(3),
+
+    UNIQUE INDEX `user.id_unique`(`id`),
+    PRIMARY KEY (`seq`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `user_signin_history` (
+    `id` VARCHAR(191) NOT NULL,
+    `ip` VARCHAR(191),
+    `seq` INTEGER NOT NULL AUTO_INCREMENT,
+    `sign_in_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `sign_out_timestamp` DATETIME(3),
+
+    INDEX `id`(`id`),
+    PRIMARY KEY (`seq`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `patient` (
+    `seq` INTEGER NOT NULL AUTO_INCREMENT,
+    `creation_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `patient_id` VARCHAR(191) NOT NULL,
+    `patient_name` VARCHAR(191),
+    `patient_sex` VARCHAR(191),
+    `patient_age` VARCHAR(191) DEFAULT '',
+
+    UNIQUE INDEX `patient.patient_id_unique`(`patient_id`),
+    INDEX `patient_id`(`patient_id`),
+    PRIMARY KEY (`seq`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `series` (
     `seq` INTEGER NOT NULL AUTO_INCREMENT,
-    `image_url` VARCHAR(191) NOT NULL,
+    `image_url` VARCHAR(191) NOT NULL DEFAULT '',
     `study_seq` INTEGER NOT NULL,
-UNIQUE INDEX `series.study_seq_unique`(`study_seq`),
 
+    UNIQUE INDEX `series.study_seq_unique`(`study_seq`),
     PRIMARY KEY (`seq`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -55,49 +85,21 @@ CREATE TABLE `study` (
     `status` ENUM('RECEIVED', 'ANALYZED', 'REVIEWED') NOT NULL DEFAULT 'ANALYZED',
     `patient_id` VARCHAR(191) NOT NULL,
     `study_date` DATETIME(3) NOT NULL,
-    `analysis_date` DATETIME(3) NOT NULL,
-    `result` VARCHAR(191) NOT NULL,
+    `analysis_date` DATETIME(3),
     `volumes` VARCHAR(191) NOT NULL,
-INDEX `patient_id`(`patient_id`),
+    `results` VARCHAR(191),
+    `confirmed_by` VARCHAR(191),
+    `confirm_user_id` VARCHAR(191),
 
+    INDEX `patient_id`(`patient_id`),
     PRIMARY KEY (`seq`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `user` (
+CREATE TABLE `dummy` (
     `seq` INTEGER NOT NULL AUTO_INCREMENT,
-    `id` VARCHAR(191) NOT NULL,
-    `password` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
-    `permission` ENUM('ADMINISTRATOR', 'PHYSICIAN', '') NOT NULL DEFAULT 'PHYSICIAN',
-    `institution` VARCHAR(191),
-    `creation_timestamp` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_timestamp` DATETIME(3),
-    `invalid_password_count` INTEGER DEFAULT 0,
-    `last_password_update_timestamp` INTEGER NOT NULL DEFAULT 0,
-UNIQUE INDEX `user.id_unique`(`id`),
 
     PRIMARY KEY (`seq`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `user_signin_history` (
-    `id` VARCHAR(191) NOT NULL,
-    `ip` VARCHAR(191),
-    `seq` INTEGER NOT NULL AUTO_INCREMENT,
-    `sign_in_timestamp` INTEGER NOT NULL DEFAULT 0,
-    `sign_out_timestamp` INTEGER NOT NULL DEFAULT 0,
-INDEX `id`(`id`),
-
-    PRIMARY KEY (`seq`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `_studyuserconfirm` (
-    `A` INTEGER NOT NULL,
-    `B` INTEGER NOT NULL,
-UNIQUE INDEX `_studyuserconfirm_AB_unique`(`A`, `B`),
-INDEX `_studyuserconfirm_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -107,16 +109,10 @@ ALTER TABLE `receive_pacs` ADD FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) O
 ALTER TABLE `send_pacs` ADD FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `user_signin_history` ADD FOREIGN KEY (`id`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `series` ADD FOREIGN KEY (`study_seq`) REFERENCES `study`(`seq`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `study` ADD FOREIGN KEY (`patient_id`) REFERENCES `patient`(`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `user_signin_history` ADD FOREIGN KEY (`id`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_studyuserconfirm` ADD FOREIGN KEY (`A`) REFERENCES `study`(`seq`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_studyuserconfirm` ADD FOREIGN KEY (`B`) REFERENCES `user`(`seq`) ON DELETE CASCADE ON UPDATE CASCADE;
