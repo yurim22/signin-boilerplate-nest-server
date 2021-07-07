@@ -19,7 +19,7 @@ const config: Config = {
         bcryptSaltOrRound: 10,
     },
     jwtSecretKey:{
-        secretOrKey: 'JUNOJWTSECRETKEY'
+        secretOrKey: 'THISISJUNOJWTSECRETKEY'
     }
 }
 
