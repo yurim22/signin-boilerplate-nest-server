@@ -21,10 +21,17 @@ export class UsersService{
     }
 
     async findOneUser(data: Prisma.userFindUniqueArgs) {
-        const user =  await this.prisma.user.findUnique(data)
 
-        const { password, ...result} = user
-        return result
+        try {
+            const user =  await this.prisma.user.findUnique(data)
+            const { password, ...result} = user
+            return result
+        }
+        // const user =  await this.prisma.user.findUnique(data)
+        catch(e) {
+            throw new Error(e);
+        }
+
     }
 
     async createUser(payload: Prisma.userCreateArgs): Promise<user> {

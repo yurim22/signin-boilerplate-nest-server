@@ -2,7 +2,7 @@ import { Config } from './config.interface';
 
 const config: Config = {
     nest: {
-        port: 3000,
+        port: 3300,
     },
     // cors: {
     //     enabled: true,
@@ -14,8 +14,8 @@ const config: Config = {
     //     sortSchema: true,
     // },
     security: {
-        expiresIn: '1h',
-        refreshIn: '3d',
+        expiresIn: '30m',
+        refreshIn: '2h',
         bcryptSaltOrRound: 10,
     },
     jwtSecretKey:{
