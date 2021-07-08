@@ -39,7 +39,7 @@ export class UsersController {
     // }
 
     @ApiBody({type: CreateUserDto})
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Post()
     async createUser(@Body() data: CreateUserDto) {
         const dto: Prisma.userCreateArgs = {

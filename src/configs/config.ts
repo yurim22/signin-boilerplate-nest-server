@@ -15,7 +15,7 @@ const config: Config = {
     // },
     security: {
         expiresIn: '30m',
-        refreshIn: '2h',
+        refreshIn: '1h',
         bcryptSaltOrRound: 10,
     },
     jwtSecretKey:{
