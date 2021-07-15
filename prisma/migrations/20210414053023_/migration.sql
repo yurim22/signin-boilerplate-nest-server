@@ -72,9 +72,10 @@ CREATE TABLE `patient` (
 -- CreateTable
 CREATE TABLE `series` (
     `seq` INTEGER NOT NULL AUTO_INCREMENT,
-    `image_url` VARCHAR(191) NOT NULL DEFAULT '',
+    `series_instance_uid` VARCHAR(200) NOT NULL,
     `study_seq` INTEGER NOT NULL,
 
+    UNIQUE INDEX `series.series_instance_uid_unique`(`series_instance_uid`),
     UNIQUE INDEX `series.study_seq_unique`(`study_seq`),
     PRIMARY KEY (`seq`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -90,7 +91,10 @@ CREATE TABLE `study` (
     `results` VARCHAR(191),
     `confirmed_by` VARCHAR(191),
     `confirm_user_id` VARCHAR(191),
+    `confirmed_date` DATETIME(3),
+    `study_instance_uid` VARCHAR(200) NOT NULL,
 
+    UNIQUE INDEX `study.study_instance_uid_unique`(`study_instance_uid`),
     INDEX `patient_id`(`patient_id`),
     PRIMARY KEY (`seq`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
