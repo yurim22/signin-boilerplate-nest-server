@@ -87,6 +87,7 @@ model study {
   series        series?
   confirmed_by String?
   confirm_user_id String?
+  confirmed_date DateTime?
   study_instance_uid String @unique @db.VarChar(200)
 
   @@index([patient_id], name: "patient_id")

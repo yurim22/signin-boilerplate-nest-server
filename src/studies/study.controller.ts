@@ -63,7 +63,8 @@ export class StudiesController {
             data: {
                 status: data.updateStudyData.status,
                 confirmed_by: data.userInfo.name,
-                confirm_user_id: data.userInfo.id
+                confirm_user_id: data.userInfo.id,
+                confirmed_date: data.updateStudyData.confirmed_date
             }
         }
         return await this.studyService.updateStudyStatus(dto)
