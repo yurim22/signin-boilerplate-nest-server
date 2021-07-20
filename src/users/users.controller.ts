@@ -28,15 +28,6 @@ export class UsersController {
         };
         return await this.usersService.findOneUser(dto)
     }
-    // @Get('/:seq')
-    // async findOneUser(@Param('seq') userSeq: string) {
-    //     const userSeqToInt = parseInt(userSeq);
-    //     const dto: Prisma.userFindUniqueArgs = {
-    //         where: { seq: userSeqToInt },
-    //     };
-
-    //     return await this.usersService.findOneUser(dto)
-    // }
 
     @ApiBody({type: CreateUserDto})
     // @UseGuards(AuthGuard('jwt'))
@@ -106,14 +97,6 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     @Patch('/changePwd/:id')
     async updatePassword(@Param('id') userid: string, @Body() data: ChangePasswordDto) {
-        // const userSeqToInt = parseInt(userSeq);
-        // const hashedPassword = await this.passwordService
-        // const dto: Prisma.userUpdateArgs = {
-        //     data: {
-        //         password: data.newPassword
-        //     },
-        //     where: {id: userid}
-        // }
 
         return await this.usersService.updatePassword(data, userid)
     }

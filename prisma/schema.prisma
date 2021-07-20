@@ -7,28 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model receive_pacs {
-  creation_timestamp DateTime  @default(now())
-  update_timestamp   DateTime?
-  receive_pacs_index Int       @id @default(autoincrement())
-  AE                 String
-  host_ip            String
-  port               String
-  user_id            String    @unique
-  user               user      @relation(fields: [user_id], references: [id])
-}
-
-model send_pacs {
-  creation_timeStamp DateTime  @default(now())
-  update_timestamp   DateTime?
-  send_pacs_index    Int       @id @default(autoincrement())
-  AE                 String
-  client_ip          String
-  port               String
-  user_id            String    @unique
-  user               user      @relation(fields: [user_id], references: [id])
-}
-
 model user {
   seq                            Int                   @id @default(autoincrement())
   id                             String                @unique
@@ -40,8 +18,6 @@ model user {
   update_timestamp               DateTime?
   invalid_password_count         Int?                  @default(0)
   last_password_update_timestamp DateTime?
-  receive_pacs                   receive_pacs?
-  send_pacs                      send_pacs?
   user_signin_history            user_signin_history[]
 }
 
@@ -56,43 +32,6 @@ model user_signin_history {
   @@index([id], name: "id")
 }
 
-model patient {
-  seq                Int      @id @default(autoincrement())
-  creation_timestamp DateTime @default(now())
-  patient_id         String   @unique
-  patient_name       String?
-  patient_sex        String?
-  patient_age        String?  @default("")
-  study              study[]
-
-  @@index([patient_id], name: "patient_id")
-}
-
-model series {
-  seq       Int    @id @default(autoincrement())
-  series_instance_uid String @unique @db.VarChar(200)
-  study_seq Int    @unique
-  study     study  @relation(fields: [study_seq], references: [seq])
-}
-
-model study {
-  seq           Int          @id @default(autoincrement())
-  status        study_status @default(ANALYZED)
-  patient_id    String
-  study_date    DateTime
-  analysis_date DateTime?
-  volumes       String
-  results       String?
-  patient       patient      @relation(fields: [patient_id], references: [patient_id])
-  series        series?
-  confirmed_by String?
-  confirm_user_id String?
-  confirmed_date DateTime?
-  study_instance_uid String @unique @db.VarChar(200)
-
-  @@index([patient_id], name: "patient_id")
-}
-
 model dummy {
   seq Int @id @default(autoincrement())
 }
@@ -101,10 +40,4 @@ enum Permission {
   ADMINISTRATOR
   PHYSICIAN
   DEVELOPER
-}
-
-enum study_status {
-  RECEIVED
-  ANALYZED
-  REVIEWED
 }

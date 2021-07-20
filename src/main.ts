@@ -7,14 +7,14 @@ async function bootstrap() {
     app.enableCors();
 
     const config = new DocumentBuilder()
-        .setTitle('JUNO DEV')
-        .setDescription('JUNO API description')
+        .setTitle('signin-boilerplate')
+        .setDescription('signin-boilerplate API description')
         .setVersion('1.0')
         .build()
     
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document)
 
-    await app.listen(3300);
+    await app.listen(3000);
 }
 bootstrap();

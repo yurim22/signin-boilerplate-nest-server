@@ -34,17 +34,3 @@ import { LocalStrategy } from './local.strategy';
 })
 
 export class AuthModule {}
-
-
-// import { Module } from "@nestjs/common";
-// import { PrismaService } from "src/services/prisma.service";
-// import { UsersController } from "./users.controller";
-// import { UsersService } from './users.service';
-
-// @Module({
-//     imports:[],
-//     providers: [PrismaService, UsersService],
-//     controllers: [UsersController]
-// })
-
-// export class UsersModule {}
