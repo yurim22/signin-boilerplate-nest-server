@@ -58,6 +58,14 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Prisma
+```bash
+# 일차적으로 mysql을 활용해 database 생성
+
+# prisma migrate로 db안에 table생성
+$ npx prisma migrate dev --name init
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
